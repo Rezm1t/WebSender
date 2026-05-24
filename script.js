@@ -4,6 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // API backend base URL (use window.API_BASE if set by page)
+    const API_BASE = window.API_BASE || 'https://web-production-0e2c9.up.railway.app';
+
     const payloadForm = document.getElementById('payloadForm');
     const fileInput = document.getElementById('payloadFile');
     const fileNameDisplay = document.getElementById('fileName');
@@ -78,13 +81,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Send POST request to Flask backend
             // The backend will read the binary file and transmit via socket
-            const response = await fetch('/send-payload', {
+            const response = await fetch(`${API_BASE}/send-payload`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                mode: 'cors'
             });
 
-            // Parse response
-            const result = await response.json();
+            const contentType = response.headers.get('content-type') || '';
+            let result;
+            if (contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                showStatus(`Non-JSON response from server: ${text.slice(0,500)}`, 'error');
+                console.error('Non-JSON response from server:', text);
+                return;
+            }
 
             // Handle response from backend
             if (result.status === 'success') {
