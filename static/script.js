@@ -4,6 +4,8 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // API backend base URL (use your Railway app URL)
+    const API_BASE = 'https://web-production-0e2c9.up.railway.app';
     const payloadForm = document.getElementById('payloadForm');
     const fileInput = document.getElementById('payloadFile');
     const fileNameDisplay = document.getElementById('fileName');
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Send POST request to Flask backend
             // The backend will read the binary file and transmit via socket
-            const response = await fetch('/send-payload', {
+            const response = await fetch(`${API_BASE}/send-payload`, {
                 method: 'POST',
                 body: formData
             });
