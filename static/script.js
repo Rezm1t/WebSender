@@ -94,8 +94,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData
             });
 
-            // Parse response
-            const result = await response.json();
+            // Parse response (handle non-JSON debug HTML gracefully)
+            const contentType = response.headers.get('content-type') || '';
+            let result;
+            if (contentType.includes('application/json')) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                showStatus(`Server returned non-JSON response: ${text.slice(0,500)}`, 'error');
+                console.error('Non-JSON response from server:', text);
+                return;
+            }
 
             // Handle response from backend
             if (result.status === 'success') {

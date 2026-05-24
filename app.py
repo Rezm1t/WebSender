@@ -5,6 +5,7 @@ Sends binary payloads to PlayStation consoles via socket
 Socket Communication Mechanism:
 This application creates TCP socket connections and transmits binary payload data
 directly to PlayStation consoles, similar to how NetCat operates.
+from werkzeug.exceptions import HTTPException
 """
 
 from flask import Flask, render_template, request, jsonify, send_from_directory
@@ -217,6 +218,21 @@ def send_payload():
 def health_check():
     """Health check endpoint - verify server is running"""
     return jsonify({'status': 'ok', 'message': 'Payload sender is running'}), 200
+
+# Error handlers: return JSON for HTTP errors and unexpected exceptions
+@app.errorhandler(HTTPException)
+def handle_http_exception(e):
+    """Return JSON for HTTPExceptions (e.g., 404, 405)"""
+    response = jsonify({'status': 'error', 'message': e.description or 'HTTP error'})
+    return response, e.code
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """Return JSON for unhandled exceptions and log traceback for debugging."""
+    import traceback
+    traceback.print_exc()
+    detail = str(e)
+    return jsonify({'status': 'error', 'message': 'Server error', 'detail': detail}), 500
 
 
 if __name__ == '__main__':
