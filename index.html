@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS4/PS5 Payload Sender</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <!-- Header with Logo -->
+    <header class="header">
+        <div class="header-content">
+            <img src="static/p2jb.png" alt="Logo" class="logo">
+            <h1 class="title">PlayStation Payload Sender</h1>
+        </div>
+    </header>
+
+    <!-- Main Container with Sidebars -->
+    <div class="container">
+        <!-- Left Sidebar - PS5 Information -->
+        <aside class="sidebar sidebar-left">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">PS5 Exploitation</h3>
+                <div class="info-block">
+                    <h4>Firmware Support</h4>
+                    <p>Current exploitable firmwares for PS5 include specific versions. Check compatibility before attempting payload deployment.</p>
+                </div>
+                <div class="info-block">
+                    <h4>Required Tools</h4>
+                    <p>• Developer Mode enabled<br>
+                       • Valid payload files (.bin, .elf)<br>
+                       • Correct listening port configuration<br>
+                       • Network connectivity</p>
+                </div>
+                <div class="info-block">
+                    <h4>Safety Guidelines</h4>
+                    <p>Always use in controlled environments. Ensure backups before any operations. Follow your jurisdiction's legal requirements.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="payload-form-container">
+                <h2 class="form-title">Send Payload</h2>
+                
+                <form id="payloadForm" class="payload-form">
+                    <!-- IP Address Input -->
+                    <div class="form-group">
+                        <label for="ipAddress" class="form-label">
+                            <span class="label-icon">🎮</span> Target IP Address
+                        </label>
+                        <input 
+                            type="text" 
+                            id="ipAddress" 
+                            name="ip_address" 
+                            class="form-input" 
+                            placeholder="192.168.1.100"
+                            required
+                        >
+                        <small class="form-hint">Enter PlayStation console IP (IPv4)</small>
+                    </div>
+
+                    <!-- Port Input -->
+                    <div class="form-group">
+                        <label for="port" class="form-label">
+                            <span class="label-icon">🔌</span> Target Port
+                        </label>
+                        <input 
+                            type="number" 
+                            id="port" 
+                            name="port" 
+                            class="form-input" 
+                            placeholder="9020"
+                            min="1" 
+                            max="65535"
+                            required
+                        >
+                        <small class="form-hint">Port range: 1 - 65535</small>
+                    </div>
+
+                    <!-- File Upload Input -->
+                    <div class="form-group">
+                        <label for="payloadFile" class="form-label">
+                            <span class="label-icon">📦</span> Payload File
+                        </label>
+                        <div class="file-input-wrapper">
+                            <input 
+                                type="file" 
+                                id="payloadFile" 
+                                name="payload_file" 
+                                class="file-input"
+                                accept=".js,.elf,.bin,.zip"
+                                required
+                            >
+                            <div class="file-input-label">
+                                <span class="file-icon">📂</span>
+                                <span id="fileName">Choose file...</span>
+                            </div>
+                        </div>
+                        <small class="form-hint">Supported: .js, .elf, .bin, .zip (Max 100MB)</small>
+                    </div>
+
+                    <!-- Status Message -->
+                    <div id="statusMessage" class="status-message" style="display: none;"></div>
+
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                        <div class="spinner"></div>
+                        <span id="loadingText">Sending payload...</span>
+                    </div>
+
+                    <!-- Send Button -->
+                    <button type="submit" class="btn-send" id="sendBtn">
+                        <span class="btn-icon">⚡</span> Send Payload
+                    </button>
+                </form>
+
+                <!-- Info Section -->
+                <div class="info-section">
+                    <h3 class="info-title">How It Works</h3>
+                    <ol class="info-list">
+                        <li>Enter your PlayStation console's IP address</li>
+                        <li>Specify the listening port on the device</li>
+                        <li>Select your payload file (.elf, .bin, .js, or .zip)</li>
+                        <li>Click "Send Payload" to transmit via socket</li>
+                        <li>Monitor the status for confirmation</li>
+                    </ol>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar - PS4 Information -->
+        <aside class="sidebar sidebar-right">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">PS4 Firmware Info</h3>
+                <div class="info-block">
+                    <h4>Supported Versions</h4>
+                    <p>PS4 exploitation support includes firmware versions 5.05, 6.72, 7.02, 7.55, 8.03, 9.00, and newer. Compatibility varies by payload type.</p>
+                </div>
+                <div class="info-block">
+                    <h4>Payload Types</h4>
+                    <p>• ROP chains (.elf)<br>
+                       • Game exploits (.js)<br>
+                       • Custom kernels (.bin)<br>
+                       • Package archives (.zip)</p>
+                </div>
+                <div class="info-block">
+                    <h4>Common Ports</h4>
+                    <p>Port 9020: Standard listener<br>
+                       Port 9021: Alternative debug<br>
+                       Port 9080: HTTP server</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 PS4/PS5 Payload Sender | Educational Purpose Only</p>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+            <p id="successText">Payload sended! Check your PS5 Screen.</p>
+            <div style="text-align:center; margin-top:12px;">
+                <button id="closeModal" class="btn-send">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
