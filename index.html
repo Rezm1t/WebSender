@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PS4/PS5 Payload Sender</title>
     <link rel="stylesheet" href="static/style.css">
+    <script>
+        // Ensure all attempts to call /send-payload are rewritten to the API backend
+        window.API_BASE = window.API_BASE || 'https://web-production-0e2c9.up.railway.app';
+        (function(){
+            const originalFetch = window.fetch.bind(window);
+            window.fetch = function(input, init){
+                try{
+                    let url = typeof input === 'string' ? input : (input && input.url) || '';
+                    if(url && (url === '/send-payload' || url.endsWith('/send-payload') && !url.startsWith('http'))){
+                        input = typeof input === 'string' ? (window.API_BASE + '/send-payload') : new Request(window.API_BASE + '/send-payload', input);
+                    }
+                }catch(e){/* ignore */}
+                return originalFetch(input, init);
+            };
+
+            const origOpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(method, url){
+                try{
+                    if(url && (url === '/send-payload' || url.endsWith('/send-payload') && !url.startsWith('http'))){
+                        url = window.API_BASE + '/send-payload';
+                    }
+                }catch(e){/* ignore */}
+                return origOpen.apply(this, [method, url].concat(Array.prototype.slice.call(arguments,2)));
+            };
+        })();
+    </script>
 </head>
 <body>
     <!-- Header with Logo -->
