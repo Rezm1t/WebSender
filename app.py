@@ -5,7 +5,6 @@ Sends binary payloads to PlayStation consoles via socket
 Socket Communication Mechanism:
 This application creates TCP socket connections and transmits binary payload data
 directly to PlayStation consoles, similar to how NetCat operates.
-from werkzeug.exceptions import HTTPException
 """
 
 from flask import Flask, render_template, request, jsonify, send_from_directory
@@ -13,6 +12,7 @@ from flask_cors import CORS
 import socket
 import os
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import HTTPException
 
 # Flask app initialization
 app = Flask(
