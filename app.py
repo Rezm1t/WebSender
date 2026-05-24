@@ -138,7 +138,7 @@ def serve_static(filename):
     return send_from_directory(app.static_folder, filename)
 
 
-@app.route('/send-payload', methods=['POST'])
+@app.route('/send-payload', methods=['POST', 'OPTIONS'])
 def send_payload():
     """
     API endpoint: /send-payload (POST)
@@ -163,6 +163,14 @@ def send_payload():
         - bytes_sent: Number of bytes transmitted (on success)
     """
     try:
+        # Log request arrival for debugging
+        print(f"[*] /send-payload called. Method: {request.method}")
+        for k, v in request.headers.items():
+            print(f"    Header: {k}: {v}")
+
+        # Handle CORS preflight (OPTIONS)
+        if request.method == 'OPTIONS':
+            return jsonify({'status': 'ok', 'message': 'preflight'}), 200
         # ===== INPUT VALIDATION =====
         ip_address = request.form.get('ip_address', '').strip()
         port = request.form.get('port', '').strip()
